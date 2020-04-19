@@ -107,7 +107,7 @@ Apify.main(async () => {
       "https://coronavirus.gob.mx/datos/Overview/overView.php"
     );
     const date_re = /Actualizado: (\d{2})-(\d{2})-(\d{4})/;
-    matching = date_re.exec(res);
+    matching = date_re.exec(overview);
     res.lastUpdatedAtSource = new Date(
       parseInt(matching[3]),
       parseInt(matching[2]) - 1,
