@@ -142,6 +142,7 @@ Apify.main(async () => {
     }
   }
 
+  await Apify.setValue("LATEST", res);
   await kvStore.setValue("LATEST", res);
   await dataset.pushData(res);
   console.log(res);
