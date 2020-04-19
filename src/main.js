@@ -4,7 +4,13 @@ const rp = require("request-promise");
 Apify.main(async () => {
   const res = {};
   res.State = {};
+
   res.country = "Mexico";
+  res.sourceUrl = "https://coronavirus.gob.mx/datos/";
+  res.README = "https://apify.com/puorc/mexico-covid19?utm_source=app";
+
+  const kvStore = await Apify.openKeyValueStore("COVID-19-MEXICO");
+  const dataset = await Apify.openDataset("COVID-19-MEXICO-HISTORY");
 
   // Find total
   const nationOptions = {
@@ -93,7 +99,23 @@ Apify.main(async () => {
     }
   }
 
-  res.lastUpdatedAtApify = Date.now();
+  res.lastUpdatedAtApify = new Date().toISOString();
+
+  // try to discover updated date
+  try {
+    overview = await rp.post(
+      "https://coronavirus.gob.mx/datos/Overview/overView.php"
+    );
+    const date_re = /Actualizado: (\d{2})-(\d{2})-(\d{4})/;
+    matching = date_re.exec(res);
+    res.lastUpdatedAtSource = new Date(
+      parseInt(matching[3]),
+      parseInt(matching[2]) - 1,
+      parseInt(matching[1])
+    ).toISOString();
+  } catch (e) {
+    res.lastUpdatedAtSource = res.lastUpdatedAtApify;
+  }
 
   // validate result
   for (const k in keyMapping) {
@@ -114,6 +136,7 @@ Apify.main(async () => {
     }
   }
 
-  await Apify.setValue("OUTPUT", res);
+  await kvStore.setValue("LATEST", res);
+  await Apify.pushData(res);
   console.log(res);
 });
