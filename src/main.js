@@ -8,6 +8,7 @@ Apify.main(async () => {
   res.country = "Mexico";
   res.sourceUrl = "https://coronavirus.gob.mx/datos/";
   res.README = "https://apify.com/puorc/mexico-covid19?utm_source=app";
+  res.historyData = "https://api.apify.com/v2/datasets/4efvuMEdxdQPCreW7/items?format=json&clean=1"
 
   const kvStore = await Apify.openKeyValueStore("COVID-19-MEXICO");
   const dataset = await Apify.openDataset("COVID-19-MEXICO-HISTORY");
