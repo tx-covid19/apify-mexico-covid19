@@ -29,7 +29,6 @@ Apify.main(async () => {
 
   const stripped = parsedBody.replace("<script>", "").replace("</script>", "");
   const statements = stripped.split(";");
-
   const keyMapping = {
     gsPosDIV: "infected",
     gsDefDIV: "deceased",
@@ -56,7 +55,7 @@ Apify.main(async () => {
         res[key] = matchingPerc[2];
       }
     } else {
-      break;
+      continue;
     }
   }
 
